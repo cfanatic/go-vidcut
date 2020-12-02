@@ -1,0 +1,28 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "1: Build",
+            "type": "shell",
+            "isBackground": true,
+            "command": "make build",
+            "problemMatcher": []
+        },
+        {
+            "label": "2: Run",
+            "type": "shell",
+            "isBackground": true,
+            "command": "make run",
+            "problemMatcher": []
+        },
+        {
+            "label": "3: Clean",
+            "type": "shell",
+            "isBackground": true,
+            "command": "make clean",
+            "problemMatcher": []
+        },
+    ]
+}

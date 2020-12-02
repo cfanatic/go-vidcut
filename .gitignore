@@ -1,0 +1,5 @@
+.DS_Store
+bin/
+misc/*
+!misc/test.mp4
+vendor/
