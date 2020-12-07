@@ -57,3 +57,54 @@ func TestTrim(t *testing.T) {
 		}
 	}
 }
+
+// TestMerge calls video.Merge to check for a correct video concatenate operation based on the sha256 checksum
+func TestMerge(t *testing.T) {
+	var (
+		path   string
+		hash   string
+		video  *Video
+		err    error
+	)
+
+	path, _ = filepath.Abs("../../misc/test.mp4")
+	duration := []string{
+		"0m10s",
+		"0m12s",
+		"0m42s",
+		"0m48s",
+	}
+
+	hash = "242fe2b4bb80acc10d0ac25fa56a6cc381d101ef47deecea6fc410db176f22a2"
+
+	if _, err := os.Stat(path); err != nil {
+		t.Fatal(err)
+	}
+
+	if video, err = NewVideo(path, duration); err != nil {
+		t.Fatal(err)
+	}
+
+	if err = video.Trim(); err != nil {
+		t.Fatal(err)
+	}
+
+	if len(video.clips) != 2 {
+		t.Fatal("Expected two clips, but found only", len(video.clips))
+	}
+
+	if err = video.Merge(); err != nil {
+		t.Fatal(err)
+	}
+
+	output := filepath.Join(filepath.Dir(path), "merged.mp4")
+
+	f, _ := os.Open(output)
+	defer f.Close()
+	hasher := sha256.New()
+	io.Copy(hasher, f)
+	value := hex.EncodeToString(hasher.Sum(nil))
+	if value != hash {
+		t.Fatal("Merge operation failed for")
+	}
+}
