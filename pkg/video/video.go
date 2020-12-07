@@ -23,8 +23,9 @@ func NewVideo(path string, duration []string) (*Video, error) {
 	return &Video{video: video, path: path, duration: duration}, err
 }
 
-// Trim produces a single clip or multiple clips based on Video.duration
-func (v *Video) Trim() error {
+// Trim produces one or more clips based on Video.duration
+func (v *Video) Trim() ([]string, error) {
+	var path []string
 	for i, j := 0, 1; i < len(v.duration); i, j = i+2, j+1 {
 		log.Printf("Processing duration [%s %s]\n", v.duration[i], v.duration[i+1])
 		start, _ := time.ParseDuration(v.duration[i])
@@ -34,6 +35,7 @@ func (v *Video) Trim() error {
 		v.video.Trim(start, end)
 		v.video.Render(dest)
 		log.Println("Saved", dest)
+		path = append(path, dest)
 	}
-	return nil
+	return path, nil
 }
