@@ -41,7 +41,7 @@ func (v *Video) Trim() error {
 	return nil
 }
 
-// Merge produces a single movie out of multiple clips
+// Merge produces a single movie out of multiple clips based on Video.duration
 func (v *Video) Merge() error {
 	log.Println("Merge video clips")
 	if err := v.video.Concatenate(v.clips, "merged.mp4"); err != nil {
