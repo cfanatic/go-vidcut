@@ -27,22 +27,25 @@ func NewVideo(path string, duration []string) (*Video, error) {
 // Trim produces one or more clips based on Video.duration
 func (v *Video) Trim() error {
 	for i, j := 0, 1; i < len(v.duration); i, j = i+2, j+1 {
-		log.Printf("Processing duration [%s %s]\n", v.duration[i], v.duration[i+1])
+		log.Printf("Trim video between %s to %s\n", v.duration[i], v.duration[i+1])
 		start, _ := time.ParseDuration(v.duration[i])
 		end, _ := time.ParseDuration(v.duration[i+1])
 		file := strings.Split(v.path, ".mp4")
 		dest := fmt.Sprintf("%s_%d.mp4", file[0], j)
 		v.video.Trim(start, end)
-		v.video.Render(dest)
-		log.Println("Saved", dest)
+		if err := v.video.Render(dest); err != nil {
+			return err
+		}
 		v.clips = append(v.clips, dest)
 	}
 	return nil
 }
 
 // Merge produces a single movie out of multiple clips
-func (v *Video) Merge() {
-	for _, clip := range v.clips {
-		fmt.Println(clip)
+func (v *Video) Merge() error {
+	log.Println("Merge video clips")
+	if err := v.video.Concatenate(v.clips, "merged.mp4"); err != nil {
+		return err
 	}
+	return nil
 }
