@@ -42,6 +42,10 @@ func TestTrim(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	if len(video.clips) != 2 {
+		t.Fatal("Expected two clips, but found only", len(video.clips))
+	}
+
 	for i, clip := range video.clips {
 		f, _ := os.Open(clip)
 		defer f.Close()
