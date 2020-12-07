@@ -7,3 +7,5 @@ run:
 
 clean:
 	rm -f -r bin/vidcut
+	rm -f -r misc/test_1.mp4
+	rm -f -r misc/test_2.mp4
