@@ -44,6 +44,7 @@ func main() {
 	video, err := video.NewVideo(path, duration)
 	if err == nil {
 		video.Trim()
+		video.Merge()
 	} else {
 		panic("Could not load video")
 	}

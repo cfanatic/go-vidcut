@@ -13,7 +13,6 @@ import (
 func TestTrim(t *testing.T) {
 	var (
 		path  string
-		clips []string
 		hash  []string
 		video *Video
 		err   error
@@ -39,18 +38,18 @@ func TestTrim(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if clips, err = video.Trim(); err != nil {
+	if err = video.Trim(); err != nil {
 		t.Fatal(err)
 	}
 
-	for i, clip := range clips {
+	for i, clip := range video.clips {
 		f, _ := os.Open(clip)
 		defer f.Close()
 		hasher := sha256.New()
 		io.Copy(hasher, f)
 		value := hex.EncodeToString(hasher.Sum(nil))
 		if value != hash[i] {
-			t.Fatal("Trim operation failed for", clips[i])
+			t.Fatal("Trim operation failed for", video.clips[i])
 		}
 	}
 }
