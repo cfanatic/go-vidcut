@@ -25,15 +25,15 @@ func NewVideo(path string, duration []string) (*Video, error) {
 }
 
 // Trim produces a single clip or multiple clips based on Video.duration
-func (e *Video) Trim() error {
-	for i, j := 0, 1; i < len(e.duration); i, j = i+2, j+1 {
-		log.Printf("Processing duration [%s %s]\n", e.duration[i], e.duration[i+1])
-		start, _ := time.ParseDuration(e.duration[i])
-		end, _ := time.ParseDuration(e.duration[i+1])
-		file := strings.Split(e.path, ".mp4")
+func (v *Video) Trim() error {
+	for i, j := 0, 1; i < len(v.duration); i, j = i+2, j+1 {
+		log.Printf("Processing duration [%s %s]\n", v.duration[i], v.duration[i+1])
+		start, _ := time.ParseDuration(v.duration[i])
+		end, _ := time.ParseDuration(v.duration[i+1])
+		file := strings.Split(v.path, ".mp4")
 		dest := fmt.Sprintf("%s_%d.mp4", file[0], j)
-		e.video.Trim(start, end)
-		e.video.Render(dest)
+		v.video.Trim(start, end)
+		v.video.Render(dest)
 		log.Println("Saved", dest)
 	}
 	return nil
