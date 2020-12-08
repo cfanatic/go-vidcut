@@ -3,7 +3,7 @@ build:
 
 run:
 	@go build -o bin/viddit cmd/viddit/main.go
-	@./bin/viddit /Users/cfanatic/Coding/Go/src/github.com/cfanatic/go-viddit/misc/test.mp4 0m10s 0m12s 0m42s 0m48s
+	@./bin/viddit misc/test.mp4 0m10s 0m12s 0m42s 0m48s
 
 clean:
 	rm -f -r bin/viddit

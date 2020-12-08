@@ -46,7 +46,7 @@ func main() {
 		video.Trim()
 		video.Merge()
 	} else {
-		panic("Could not load video")
+		panic(err)
 	}
 
 	log.Println("Done")

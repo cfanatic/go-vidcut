@@ -3,6 +3,7 @@ package video
 import (
 	"fmt"
 	"log"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -19,6 +20,7 @@ type Video struct {
 
 // NewVideo returns a Video object that can process trim and merge operations
 func NewVideo(path string, duration []string) (*Video, error) {
+	path, _ = filepath.Abs(path)
 	log.Println("Loading " + path)
 	video, err := cinema.Load(path)
 	return &Video{video: video, path: path, duration: duration}, err
