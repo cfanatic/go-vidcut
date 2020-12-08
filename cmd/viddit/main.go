@@ -43,8 +43,13 @@ func main() {
 
 	video, err := video.NewVideo(path, duration)
 	if err == nil {
-		video.Trim()
-		video.Merge()
+		switch len(duration) == 2 {
+		case true:
+			video.Trim()
+		case false:
+			video.Trim()
+			video.Merge()
+		}
 	} else {
 		panic(err)
 	}
