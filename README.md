@@ -1,4 +1,4 @@
-# go-vidcut
+# go-viddit
 
 This tool is used to trim and concatenate video files from the terminal in a convenient way.
 

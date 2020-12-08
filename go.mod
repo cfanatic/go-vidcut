@@ -1,4 +1,4 @@
-module github.com/cfanatic/go-vidcut
+module github.com/cfanatic/go-viddit
 
 go 1.15
 

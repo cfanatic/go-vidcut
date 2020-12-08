@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/cfanatic/go-vidcut/pkg/video"
+	"github.com/cfanatic/go-viddit/pkg/video"
 )
 
 func main() {
