@@ -40,18 +40,18 @@ func TestTrim(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if len(video.clips) != 2 {
-		t.Fatal("Expected two clips, but found only", len(video.clips))
+	if len(video.list) != 2 {
+		t.Fatal("Expected two clips, but found only", len(video.list))
 	}
 
-	for i, clip := range video.clips {
+	for i, clip := range video.list {
 		f, _ := os.Stat(clip)
 		value := float64(f.Size()) / 1024.0 // convert to kilobytes
 		thres1 := size[i] * 0.90            // -10% margin of difference across different systems
 		thres2 := size[i] * 1.10            // +10% margin of difference across different systems
 		t.Log(value, thres1, thres2)
 		if value < thres1 || value > thres2 {
-			t.Fatal("Trim operation failed for", video.clips[i])
+			t.Fatal("Trim operation failed for", video.list[i])
 		}
 	}
 }
@@ -87,8 +87,8 @@ func TestMerge(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if len(video.clips) != 2 {
-		t.Fatal("Expected two clips, but found only", len(video.clips))
+	if len(video.list) != 2 {
+		t.Fatal("Expected two clips, but found only", len(video.list))
 	}
 
 	if err = video.Merge(); err != nil {

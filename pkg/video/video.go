@@ -15,7 +15,7 @@ type Video struct {
 	video    *cinema.Video
 	path     string
 	duration []string
-	clips    []string
+	list     []string
 }
 
 // NewVideo returns a Video object that can process trim and merge operations
@@ -26,7 +26,7 @@ func NewVideo(path string, duration []string) (*Video, error) {
 	return &Video{video: video, path: path, duration: duration}, err
 }
 
-// Trim produces one or more clips based on Video.duration
+// Trim produces one or more videos based on Video.duration
 func (v *Video) Trim() error {
 	for i, j := 0, 1; i < len(v.duration); i, j = i+2, j+1 {
 		log.Printf("Trim video between %s to %s\n", v.duration[i], v.duration[i+1])
@@ -38,15 +38,20 @@ func (v *Video) Trim() error {
 		if err := v.video.Render(dest); err != nil {
 			return err
 		}
-		v.clips = append(v.clips, dest)
+		v.list = append(v.list, dest)
 	}
 	return nil
 }
 
-// Merge produces a single movie out of multiple clips based on Video.duration
+// Merge produces a single clip out of multiple videos based on Video.duration
 func (v *Video) Merge() error {
-	log.Println("Merge video clips")
-	if err := v.video.Concatenate(v.clips, "merged.mp4"); err != nil {
+	var clip *cinema.Clip
+	var err error
+	log.Println("Concatenate video files")
+	if clip, err = cinema.NewClip(v.list); err != nil {
+		return err
+	}
+	if err := clip.Concatenate("merged.mp4"); err != nil {
 		return err
 	}
 	return nil
