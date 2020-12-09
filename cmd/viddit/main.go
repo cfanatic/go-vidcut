@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/cfanatic/go-viddit/pkg/video"
 )
@@ -43,6 +44,10 @@ func main() {
 
 	video, err := video.NewVideo(path, duration)
 	if err == nil {
+		defer func(start time.Time) {
+			elapsed := time.Since(start)
+			log.Printf("Elapsed processing time: %dms\n", elapsed.Milliseconds())
+		}(time.Now())
 		switch len(duration) == 2 {
 		case true:
 			video.Trim()
@@ -53,6 +58,5 @@ func main() {
 	} else {
 		panic(err)
 	}
-
 	log.Println("Done")
 }
