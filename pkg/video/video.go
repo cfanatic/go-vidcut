@@ -12,10 +12,10 @@ import (
 
 // Video contains the input file and other processing information
 type Video struct {
-	video    *cinema.Video
-	path     string
-	duration []string
-	list     []string
+	video    *cinema.Video // object that enables video processing
+	path     string        // path to the video file
+	duration []string      // list of duration strings with unit as in '0m48s, '3m20s', etc.
+	list     []string      // list of videos to concatenate
 }
 
 // NewVideo returns a Video object that can process trim and merge operations
