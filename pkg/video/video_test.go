@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-// TestTrim calls video.Trim to check for correct clip outputs based on sha256 checksums
+// TestTrim calls video.Trim to check for correct clip outputs based on the expected file size
 func TestTrim(t *testing.T) {
 	var (
 		video    *Video
@@ -56,7 +56,7 @@ func TestTrim(t *testing.T) {
 	}
 }
 
-// TestMerge calls video.Merge to check for a correct video concatenate operation based on the sha256 checksum
+// TestMerge calls video.Merge to check for a correct video concatenate operation based on the expected file size
 func TestMerge(t *testing.T) {
 	var (
 		video    *Video
