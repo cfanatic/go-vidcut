@@ -7,7 +7,6 @@ run:
 
 clean:
 	rm -f -r bin/viddit
-	rm -f -r misc/test_1.mp4
-	rm -f -r misc/test_2.mp4
+	rm -f -r misc/test_*.mp4
 	rm -f -r misc/merged.mp4
 	rm -f -r misc/concat.txt

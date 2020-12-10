@@ -5,6 +5,7 @@ import (
 	"log"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/jtguibas/cinema"
@@ -12,34 +13,45 @@ import (
 
 // Video contains the input file and other processing information
 type Video struct {
-	video    *cinema.Video // object that enables video processing
-	path     string        // path to the video file
-	duration []string      // list of duration strings with unit as in '0m48s, '3m20s', etc.
-	list     []string      // list of videos to concatenate
+	path     string     // path to the video file
+	duration []string   // list of duration strings with unit as in '0m48s, '3m20s', etc.
+	list     []string   // list of videos to concatenate
+	mu       sync.Mutex // update video list concurrently
 }
 
 // NewVideo returns a Video object that can process trim and merge operations
 func NewVideo(path string, duration []string) (*Video, error) {
-	path, _ = filepath.Abs(path)
+	list := make([]string, len(duration)/2, len(duration)/2)
+	path, err := filepath.Abs(path)
 	log.Println("Loading " + path)
-	video, err := cinema.Load(path)
-	return &Video{video: video, path: path, duration: duration}, err
+	return &Video{path: path, duration: duration, list: list}, err
 }
 
-// Trim produces one or more videos based on Video.duration
+// Trim concurrently produces one or more videos based on Video.duration
 func (v *Video) Trim() error {
-	for i, j := 0, 1; i < len(v.duration); i, j = i+2, j+1 {
-		log.Printf("Trim video between %s to %s\n", v.duration[i], v.duration[i+1])
-		start, _ := time.ParseDuration(v.duration[i])
-		end, _ := time.ParseDuration(v.duration[i+1])
+	var wg sync.WaitGroup
+	worker := func(j int, videoWorker *cinema.Video, start, end time.Duration, wg *sync.WaitGroup) {
+		defer wg.Done()
+		log.Printf("Video %d between %s to %s\n", j, start, end)
 		file := strings.Split(v.path, ".mp4")
 		dest := fmt.Sprintf("%s_%d.mp4", file[0], j)
-		v.video.Trim(start, end)
-		if err := v.video.Render(dest); err != nil {
-			return err
-		}
-		v.list = append(v.list, dest)
+		videoWorker.Trim(start, end)
+		videoWorker.Render(dest)
+		v.mu.Lock()
+		v.list[j-1] = dest
+		v.mu.Unlock()
+		log.Printf("Video %d done\n", j)
 	}
+	log.Println("Trim start")
+	for i, j := 0, 1; i < len(v.duration); i, j = i+2, j+1 {
+		wg.Add(1)
+		start, _ := time.ParseDuration(v.duration[i])
+		end, _ := time.ParseDuration(v.duration[i+1])
+		videoWorker, _ := cinema.Load(v.path)
+		go worker(j, videoWorker, start, end, &wg)
+	}
+	wg.Wait()
+	log.Println("Trim done")
 	return nil
 }
 
@@ -47,7 +59,7 @@ func (v *Video) Trim() error {
 func (v *Video) Merge() error {
 	var clip *cinema.Clip
 	var err error
-	log.Println("Concatenate video files")
+	log.Println("Concatenate videos")
 	if clip, err = cinema.NewClip(v.list); err != nil {
 		return err
 	}

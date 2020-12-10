@@ -46,7 +46,7 @@ func main() {
 	if err == nil {
 		defer func(start time.Time) {
 			elapsed := time.Since(start)
-			log.Printf("Elapsed processing time: %dms\n", elapsed.Milliseconds())
+			log.Printf("Elapsed processing time: %.2fs\n", elapsed.Seconds())
 		}(time.Now())
 		switch len(duration) == 2 {
 		case true:
@@ -58,5 +58,4 @@ func main() {
 	} else {
 		panic(err)
 	}
-	log.Println("Done")
 }
